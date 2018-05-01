@@ -184,29 +184,29 @@ int main()
 // Assignment 8 host code
 // Monte Carlo attempt
     float estimate;
-    float* h_est = (float*)malloc(NUM_BLOCKS * THREADS_PER_BLOCK * sizeof(float));
+    float* h_est = (float*)malloc(NUM_BLOCKS_MC * THREADS_PER_BLOCK * sizeof(float));
     float* d_est;
     curandState* h_states;
     curandState* d_states;
 
-    err = cudaMalloc( (void**)&d_est, NUM_BLOCKS * THREADS_PER_BLOCK * sizeof(float) );
+    err = cudaMalloc( (void**)&d_est, NUM_BLOCKS_MC * THREADS_PER_BLOCK * sizeof(float) );
     gpu_err_chk(err);
-    err = cudaMalloc( (void**)&d_states, NUM_BLOCKS * THREADS_PER_BLOCK * sizeof(float) );
+    err = cudaMalloc( (void**)&d_states, NUM_BLOCKS_MC * THREADS_PER_BLOCK * sizeof(float) );
     gpu_err_chk(err);
 
-    monte_carlo_kernel<<<NUM_BLOCKS, THREADS_PER_BLOCK>>>( a, b, d_est, d_states );
+    monte_carlo_kernel<<<NUM_BLOCKS_MC, THREADS_PER_BLOCK>>>( a, b, d_est, d_states );
     err = cudaGetLastError();
     gpu_err_chk(err);
     cout << "a" << endl;
-    cudaMemcpy( h_est, d_est, NUM_BLOCKS * THREADS_PER_BLOCK * sizeof(float), cudaMemcpyDeviceToHost );
+    cudaMemcpy( h_est, d_est, NUM_BLOCKS_MC * THREADS_PER_BLOCK * sizeof(float), cudaMemcpyDeviceToHost );
     cudaFree(d_est);
     cout << "b" << endl;
 
-    for( int i=0; i < NUM_BLOCKS * THREADS_PER_BLOCK; i++ )
+    for( int i=0; i < NUM_BLOCKS_MC * THREADS_PER_BLOCK; i++ )
     {
         estimate += h_est[i];
     }
-    estimate /= (NUM_BLOCKS * THREADS_PER_BLOCK);    // Get the average value from threads
+    estimate /= (NUM_BLOCKS_MC * THREADS_PER_BLOCK);    // Get the average value from threads
 
     cout << "Estimate: " << estimate << endl;
     
