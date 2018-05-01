@@ -197,10 +197,9 @@ int main()
     monte_carlo_kernel<<<NUM_BLOCKS_MC, THREADS_PER_BLOCK>>>( a, b, d_est, d_states );
     err = cudaGetLastError();
     gpu_err_chk(err);
-    cout << "a" << endl;
+
     cudaMemcpy( h_est, d_est, NUM_BLOCKS_MC * THREADS_PER_BLOCK * sizeof(float), cudaMemcpyDeviceToHost );
     cudaFree(d_est);
-    cout << "b" << endl;
 
     for( int i=0; i < NUM_BLOCKS_MC * THREADS_PER_BLOCK; i++ )
     {
